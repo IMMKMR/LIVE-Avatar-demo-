@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline Clip Recorder — Godrej Agrovet Maya Avatar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b1120;
+      color: #f1f5f9;
+      min-height: 100vh;
+      padding: 20px 24px 40px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 14px 18px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+    .title { font-size: 16px; font-weight: 700; }
+    .sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .video-box {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #020617;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #1f2937;
+      position: relative;
+    }
+    #rec-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .rec-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #334155;
+    }
+    .rec-badge.recording {
+      background: #dc2626;
+      border-color: #f87171;
+      color: #fff;
+    }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-green { background: #059669; color: #fff; }
+    .btn-red { background: #dc2626; color: #fff; }
+    .btn-slate { background: #1f2937; color: #f1f5f9; border-color: #374151; }
+
+    .clip-list { display: flex; flex-direction: column; gap: 8px; }
+    .clip-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #0b1120;
+      border: 1px solid #1f2937;
+      border-radius: 9px;
+    }
+    .clip-name { font-size: 13px; font-weight: 600; }
+    .clip-text { font-size: 11.5px; color: #94a3b8; margin-top: 2px; max-width: 520px; }
+    .clip-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #1f2937;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    .clip-status.saved { background: #064e3b; color: #a7f3d0; }
+    .clip-status.active { background: #1e3a8a; color: #bfdbfe; }
+    .clip-status.error { background: #7f1d1d; color: #fecaca; }
+
+    .log-box {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px 12px;
+      height: 150px;
+      overflow-y: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11.5px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="title">Offline Clip Recorder — Capture Once, Run Offline Forever (0 Credits)</div>
+      <div class="sub">Records Maya's neutral idle loop + all 9 Hindi responses in one short LiveAvatar session and saves them into <code>public/offline/</code>.</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <a href="/?mode=offline" target="_blank" class="btn btn-green">Open Offline Portal ↗</a>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="video-box">
+          <span class="rec-badge" id="rec-badge">READY</span>
+          <video id="rec-video" autoplay playsinline></video>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-green" id="btn-record-remaining" style="flex:1;">Record Remaining Only (&lt; 2 MB)</button>
+          <button class="btn btn-primary" id="btn-record-all">Record All 10</button>
+          <button class="btn btn-red" id="btn-abort" disabled>Stop</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:12px;font-weight:700;color:#93c5fd;text-transform:uppercase;margin-bottom:8px;">Recorder Log</div>
+        <div class="log-box" id="rec-log"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;color:#93c5fd;text-transform:uppercase;margin-bottom:10px;">
+        Pre-Planned Offline Clips (Hindi • Maya Neutral + ElevenLabs v4)
+      </div>
+      <div class="clip-list" id="clip-list"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/record-offline.js"></script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Control Panel — Godrej Agrovet Ltd AI Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b1120;
+      color: #f1f5f9;
+      min-height: 100vh;
+      padding: 18px 22px 40px;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 14px 18px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+    .top-title { font-size: 15.5px; font-weight: 700; color: #f8fafc; }
+    .top-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+    .status-chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: #1f2937;
+      color: #cbd5e1;
+      border: 1px solid #374151;
+    }
+    .chip.green { background: #064e3b; color: #a7f3d0; border-color: #065f46; }
+    .chip.blue { background: #1e3a8a; color: #bfdbfe; border-color: #1d4ed8; }
+    .chip.amber { background: #78350f; color: #fde68a; border-color: #92400e; }
+    .chip.red { background: #7f1d1d; color: #fecaca; border-color: #991b1b; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 375px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      margin-bottom: 12px;
+    }
+
+    label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin: 10px 0 5px; }
+    select, input[type="text"], textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #0b1120;
+      color: #f8fafc;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+    select:focus, textarea:focus, input:focus { border-color: #3b82f6; }
+
+    .avatar-preview-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #0b1120;
+      border: 1px solid #1f2937;
+    }
+    .avatar-preview-box img {
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #1f2937;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: #0b1120;
+      border: 1px solid #1f2937;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+    .toggle-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: #3b82f6; cursor: pointer; }
+
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .btn {
+      padding: 9px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-green { background: #059669; color: #fff; }
+    .btn-red { background: #dc2626; color: #fff; }
+    .btn-slate { background: #1f2937; color: #f1f5f9; border-color: #374151; }
+    .btn-slate:hover { background: #374151; }
+
+    .cue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .cue-btn {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      background: #1f2937;
+      color: #f8fafc;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .cue-btn:hover { border-color: #60a5fa; background: #263348; }
+    .cue-btn small { font-size: 11px; font-weight: 400; color: #94a3b8; }
+    .cue-btn.accent { border-color: #1d4ed8; background: #172554; }
+    .cue-btn.danger { border-color: #991b1b; background: #450a0a; }
+
+    .log-box {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px 12px;
+      height: 180px;
+      overflow-y: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11.5px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div>
+      <div class="top-title">Godrej Agrovet Ltd — Demo &amp; Producer Control Panel</div>
+      <div class="top-sub">Keep this window on your second screen while showcasing <strong>index.html</strong> (Employee Portal).</div>
+    </div>
+    <div class="status-chips">
+      <span class="chip" id="chip-portal">Portal: Waiting...</span>
+      <span class="chip" id="chip-avatar">Avatar: Offline</span>
+      <a href="/" target="_blank" class="btn btn-primary" style="padding:6px 12px;font-size:12px;">Open Employee Portal ↗</a>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Left Column: Avatar & ElevenLabs Audio Config -->
+    <div>
+      <div class="card">
+        <h3>1. Maya Avatar &amp; ElevenLabs Audio</h3>
+        <label for="sel-avatar">LiveAvatar Character</label>
+        <select id="sel-avatar">
+          <option value="">Loading avatars from LiveAvatar API...</option>
+        </select>
+
+        <div class="avatar-preview-box">
+          <img id="avatar-preview-img" src="" alt="Avatar preview" />
+          <div>
+            <div id="avatar-preview-name" style="font-size:13px;font-weight:700;color:#fff;">—</div>
+            <div id="avatar-preview-meta" style="font-size:11.5px;color:#94a3b8;margin-top:2px;">Neutral Corporate Presenter</div>
+          </div>
+        </div>
+
+        <label for="sel-audio-engine">Audio Engine</label>
+        <select id="sel-audio-engine">
+          <option value="elevenlabs" selected>ElevenLabs Studio Voice (24kHz PCM — Cleanest)</option>
+          <option value="liveavatar">LiveAvatar Built-in Voice (Fallback)</option>
+        </select>
+
+        <div id="elevenlabs-options">
+          <label for="sel-el-voice">ElevenLabs Voice</label>
+          <select id="sel-el-voice">
+            <option value="hL2sW5Y3zbNy7yYtXwBo">Selected GAVL Voice (hL2sW5Y3zbNy7yYtXwBo — Default)</option>
+          </select>
+
+          <label for="sel-el-model">ElevenLabs Model</label>
+          <select id="sel-el-model">
+            <option value="eleven_v4" selected>Eleven v4 (Most Human, Soft &amp; Natural)</option>
+            <option value="eleven_multilingual_v2">Eleven Multilingual v2 (Warm &amp; Steady)</option>
+            <option value="eleven_flash_v2_5">Eleven Flash v2.5 (Fastest Live)</option>
+          </select>
+        </div>
+
+        <label for="sel-lang">Script Language</label>
+        <select id="sel-lang">
+          <option value="hi" selected>Hindi (हिंदी)</option>
+          <option value="en">English</option>
+        </select>
+
+        <div class="toggle-row">
+          <span>Sandbox Mode <small style="color:#94a3b8;">(Uncheck for Maya / 1080p avatars)</small></span>
+          <input type="checkbox" id="chk-sandbox" />
+        </div>
+
+        <div class="toggle-row">
+          <span>Auto-Greet Employee on Connect</span>
+          <input type="checkbox" id="chk-autogreet" checked />
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-green" style="flex:1;" id="btn-start">Start Maya on Portal</button>
+          <button class="btn btn-red" id="btn-stop">Stop</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Live Event Log</h3>
+        <div class="log-box" id="studio-log"></div>
+      </div>
+    </div>
+
+    <!-- Right Column: Scripted Employee Interaction Cues & Teleprompter -->
+    <div>
+      <div class="card">
+        <h3>2. One-Click Internal Demo Cues</h3>
+        <div class="cue-grid" id="cue-grid"></div>
+      </div>
+
+      <div class="card">
+        <h3>3. Custom Teleprompter (Simulated Employee Q&amp;A)</h3>
+        <label for="sim-question">Optional Employee Question (displays in portal chat)</label>
+        <input type="text" id="sim-question" placeholder="e.g., When is the Q4 townhall scheduled?" />
+
+        <label for="teleprompter-text">Maya Spoken Response (ElevenLabs HD Audio)</label>
+        <textarea id="teleprompter-text" rows="3" placeholder="Type any corporate response here for Maya to speak live..."></textarea>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-speak-custom">Speak on Portal</button>
+          <button class="btn btn-slate" id="btn-clear-custom">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/control-app.js"></script>
+</body>
+</html>

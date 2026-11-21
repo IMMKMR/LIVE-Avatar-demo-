@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Godrej Agrovet Ltd — Internal Employee AI Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./src/portal.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Minimal Corporate Top Navigation (Logo Only) -->
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="brand-logo-wrap">
+          <img src="./godrej-agrovet-logo.png" alt="Godrej Agrovet Ltd" class="brand-logo-img" />
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Two-Column Internal Workspace -->
+    <main class="workspace">
+      <!-- Left: Neutral Live Avatar Stage (Auto-Starts on Load, Captions Always On) -->
+      <section class="stage-column">
+        <div class="stage-card">
+          <div class="stage-top-overlays">
+            <div id="stage-status-pill" data-state="connecting">
+              <span class="status-indicator-dot"></span>
+              <span id="stage-status-text">CONNECTING LIVE AVATAR...</span>
+            </div>
+            <div id="speaking-wave" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <button type="button" id="btn-unmute-overlay" class="unmute-overlay" style="display:none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+            Click to Enable Sound
+          </button>
+
+          <video id="avatar-idle-video" autoplay loop muted playsinline style="display:none;"></video>
+          <video id="avatar-video" autoplay playsinline></video>
+
+          <div id="avatar-placeholder">
+            <div class="placeholder-emblem" aria-hidden="true">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+              </svg>
+            </div>
+            <div class="placeholder-title">Connecting to Maya...</div>
+            <div class="placeholder-desc">
+              Initializing live session. Please wait a moment.
+            </div>
+          </div>
+
+          <div class="stage-bottom-overlays">
+            <div id="stage-caption"></div>
+            <div class="lower-third">
+              <div>
+                <div class="lower-third-name" id="lower-third-name">MAYA</div>
+                <div class="lower-third-role">Internal HR, Onboarding &amp; IT Support</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Employee Self-Service Interaction Panel -->
+      <aside class="desk-panel">
+        <div class="topics-section">
+          <div class="topics-label">Common Internal Topics</div>
+          <div class="topics-grid" id="topics-grid"></div>
+        </div>
+
+        <div class="transcript-feed" id="transcript-feed"></div>
+
+        <form class="desk-composer" id="employee-form">
+          <input
+            type="text"
+            id="employee-input"
+            placeholder="Ask about leave policy, onboarding, IT VPN, payroll..."
+            autocomplete="off"
+          />
+          <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="./src/portal-app.js"></script>
+</body>
+</html>

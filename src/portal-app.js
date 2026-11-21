@@ -22,7 +22,7 @@ let elevenLabsModelId = DEFAULT_ELEVENLABS_MODEL_ID;
 let avatarStatus = 'connecting'; // offline | connecting | idle | speaking | error
 let currentModeLabel = 'CONNECTING';
 let currentAvatarName = 'Maya';
-const captionsEnabled = true;
+const captionsEnabled = false;
 
 // DOM references
 const idleVideoEl = document.getElementById('avatar-idle-video');
@@ -134,6 +134,8 @@ function renderQuickTopics() {
   topicsGridEl.querySelectorAll('.topic-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       unlockAudio(false);
+      topicsGridEl.querySelectorAll('.topic-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
       const topic = QUICK_TOPICS.find((t) => t.id === btn.dataset.topicId);
       if (!topic) return;
       const lang = getLang();

@@ -1,5 +1,6 @@
 node_modules/
 dist/
+colab_assets/
 .env
 .env.local
 .vercel

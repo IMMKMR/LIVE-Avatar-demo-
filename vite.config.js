@@ -17,6 +17,70 @@ function liveAvatarAndElevenLabsDevPlugin(env) {
       if (env.LIVEAVATAR_API_KEY && !process.env.LIVEAVATAR_API_KEY) {
         process.env.LIVEAVATAR_API_KEY = env.LIVEAVATAR_API_KEY;
       }
+      if (env.GEMINI_API_KEY && !process.env.GEMINI_API_KEY) {
+        process.env.GEMINI_API_KEY = env.GEMINI_API_KEY;
+      }
+
+      // Live personalized Hindi reply generator via Gemini (used only for live chat / live names)
+      server.middlewares.use('/api/gemini-reply', async (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        if (req.method === 'OPTIONS') {
+          res.statusCode = 200;
+          res.end();
+          return;
+        }
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          return;
+        }
+        try {
+          let rawBody = '';
+          for await (const chunk of req) rawBody += chunk;
+          const body = JSON.parse(rawBody || '{}');
+          const message = (body.message || '').trim();
+          const apiKey = process.env.GEMINI_API_KEY || env.GEMINI_API_KEY || '';
+          if (!apiKey) {
+            res.statusCode = 200;
+            res.end(
+              JSON.stringify({
+                reply: `नमस्ते! मैंने आपका मैसेज नोट कर लिया है। बताइए, गोदरेज एग्रोवेट में आज मैं आपकी क्या मदद कर सकती हूँ?`,
+                source: 'fallback',
+              })
+            );
+            return;
+          }
+          const gRes = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                systemInstruction: {
+                  parts: [
+                    {
+                      text: 'You are Maya, a warm, calm, and polite Indian female HR assistant at Godrej Agrovet Ltd (GAVL). Always reply in natural, soft, conversational Devanagari Hindi (2 short sentences maximum, under 35 words total). If the employee mentions their name or asks you to greet someone by name, warmly greet them using that exact name in Hindi. Answer HR, leave (24 privilege leaves, 10 sick leaves, 10 carry-forward), onboarding, IT/VPN, payroll (second-last working day), hybrid work (Tue-Thu), or health benefits accurately. No markdown, bullets, emojis, or quotes — clean spoken Hindi only.',
+                    },
+                  ],
+                },
+                contents: [{ role: 'user', parts: [{ text: message }] }],
+                generationConfig: { temperature: 0.5, maxOutputTokens: 120 },
+              }),
+            }
+          );
+          const gData = await gRes.json();
+          const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+          if (!gRes.ok || !reply) throw new Error(gData?.error?.message || 'Gemini reply failed');
+          res.statusCode = 200;
+          res.end(JSON.stringify({ reply, source: 'gemini-2.5-flash' }));
+        } catch (err) {
+          res.statusCode = 500;
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
 
       // List available offline clips in public/offline/
       server.middlewares.use('/api/offline-clips', (req, res) => {

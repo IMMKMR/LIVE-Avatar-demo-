@@ -45,6 +45,7 @@
 
           <video id="avatar-idle-video" autoplay loop muted playsinline style="display:none;"></video>
           <video id="avatar-video" autoplay playsinline></video>
+          <video id="avatar-live-video" autoplay playsinline style="opacity:0;pointer-events:none;"></video>
 
           <div id="avatar-placeholder">
             <div class="placeholder-emblem" aria-hidden="true">
@@ -70,12 +71,24 @@
         </div>
       </section>
 
-      <!-- Right: Common Internal Topics Panel -->
+      <!-- Right: Common Internal Topics (Offline) + Live Name Chat (On-Demand Live Model) -->
       <aside class="desk-panel">
-        <div class="topics-section topics-only">
-          <div class="topics-label">Common Internal Topics</div>
+        <div class="topics-section">
+          <div class="topics-label">Common Internal Topics <span class="mode-chip offline">Offline • 0 Credits</span></div>
           <div class="topics-grid" id="topics-grid"></div>
         </div>
+
+        <div class="transcript-feed" id="transcript-feed"></div>
+
+        <form class="desk-composer" id="employee-form">
+          <input
+            type="text"
+            id="employee-input"
+            placeholder="Type a live name or custom question (activates Live Model)..."
+            autocomplete="off"
+          />
+          <button type="submit" class="btn btn-primary" id="btn-live-send">Send Live</button>
+        </form>
       </aside>
     </main>
   </div>

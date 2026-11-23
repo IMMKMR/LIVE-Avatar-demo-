@@ -8,5 +8,16 @@
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/elevenlabs-tts.js": {
+      "maxDuration": 30
+    },
+    "api/liveavatar.js": {
+      "maxDuration": 30
+    },
+    "api/gemini-reply.js": {
+      "maxDuration": 30
+    }
+  }
 }
